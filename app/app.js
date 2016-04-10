@@ -2,7 +2,8 @@ angular.module('app', [
     'ngRoute',
     'environment',
     'app.authService',
-    'app.login'
+    'app.login',
+    'app.game-list'
 
   ])
   .config([

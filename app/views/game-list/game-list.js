@@ -11,18 +11,21 @@ angular.module('app.game-list', ['ngRoute'])
     '$scope',
     '$http',
     '$location',
-    'endpointConfig',
-    function ($scope, $http, $location, endpointConfig) {
+    'authService',
+    function ($scope, $http, $location, authService) {
 
+      console.log('test');
+      
+      
       // TODO get class id for student
 
       // TODO get quizzes for the class here
       /**
        * Retrieve all published quizzes
        */
-      $http
-        .get(endpointConfig.apiEndpoint + '/quizzes') // TODO change request endpoint
-        .then(quizzesRetrieveSuccess, quizzesRetrieveFail);
+      // $http
+      //   .get(endpointConfig.apiEndpoint + '/quizzes') // TODO change request endpoint
+      //   .then(quizzesRetrieveSuccess, quizzesRetrieveFail);
 
       function quizzesRetrieveSuccess(response) {
         $scope.quizzes = response.data;
@@ -44,6 +47,11 @@ angular.module('app.game-list', ['ngRoute'])
        */
       $scope.startQuiz = function (id) {
         $location.path("/questions/" + id); // TODO change request endpoint get quiz
-      }
+      };
+
+      $scope.logoutBtnClick = function () {
+        authService.logout();
+        $location.path("/login");
+      };
 
     }]);
