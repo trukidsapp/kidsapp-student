@@ -7,7 +7,7 @@ angular.module('app.login', ['ngRoute'])
     });
   }])
 
-  .controller('LoginCOntroller', [
+  .controller('LoginController', [
     '$scope',
     '$http',
     '$location',
