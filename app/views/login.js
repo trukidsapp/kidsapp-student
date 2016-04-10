@@ -11,9 +11,29 @@ angular.module('app.login', ['ngRoute'])
     '$scope',
     '$http',
     '$location',
-    function ($scope, $http, $location) {
+    'authService',
+    'envService',
+    function ($scope, $http, $location, authService, envService) {
 
-      // TODO login controller goes here
+      $scope.attemptLogin = function () {
+        $scope.user.userType = "teacher";
+        $http.post('http:' + envService.read('apiUrl') + '/authenticate', $scope.user).then(authSuccess, authFailed);
+      };
+
+      function authSuccess(response) {
+        authService.login(response.data.token);
+        $location.path('/home');
+
+      }
+
+      function authFailed(response) {
+        if (response.status == 403) {
+          $scope.isLoginAuthFail = true;
+        }
+        else {
+          $scope.isLoginError = true
+        }
+      }
 
 
     }]);
