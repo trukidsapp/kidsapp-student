@@ -9,7 +9,7 @@ angular.module('app', [
     '$routeProvider',
     'envServiceProvider',
     function ($routeProvider, envServiceProvider) {
-      $routeProvider.otherwise({redirectTo: '/login'});
+      $routeProvider.otherwise({redirectTo: '/game-list'});
 
       envServiceProvider.config({
         domains: {
@@ -32,7 +32,6 @@ angular.module('app', [
       if (!authService.isUserAuthenticated()) {
         $location.path("/login");
       }
-
 
     });
   });

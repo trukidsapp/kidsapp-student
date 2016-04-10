@@ -1,3 +1,24 @@
 <div class="container">
 
+	<div class="col-md-6">
+		<h2>Quizzes in Game</h2>
+		<p class="help-block">Select quiz</p>
+
+		<div class="panel panel-warning" ng-show="!quizzes.length">
+			<div class="panel-body">
+				<p>No evaluations available.</p>
+			</div>
+		</div>
+
+		<div class="panel panel-primary" ng-repeat="quiz in quizzes">
+			<div class="panel-body">
+				<h4>{{quiz.name}}</h4>
+				<button type="button" class="btn btn-default btn-lg pull-right" ng-click="startQuiz(quiz.id)">
+					<span class="glyphicon glyphicon-flag" aria-hidden="true"></span> Start
+				</button>
+			</div>
+		</div>
+		</table>
+	</div>
 </div>
+
