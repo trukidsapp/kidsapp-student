@@ -16,13 +16,13 @@ angular.module('app.login', ['ngRoute'])
     function ($scope, $http, $location, authService, envService) {
 
       $scope.attemptLogin = function () {
-        $scope.user.userType = "teacher";
+        $scope.user.userType = "student";
         $http.post('http:' + envService.read('apiUrl') + '/authenticate', $scope.user).then(authSuccess, authFailed);
       };
 
       function authSuccess(response) {
         authService.login(response.data.token);
-        $location.path('/home');
+        $location.path('/game-list');
 
       }
 

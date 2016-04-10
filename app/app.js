@@ -1,30 +1,30 @@
 angular.module('app', [
     'ngRoute',
-    //  'environment',
-    'app.authService' //,
-    // 'app.login'
+    'environment',
+    'app.authService',
+    'app.login'
 
   ])
   .config([
     '$routeProvider',
-    // 'envServiceProvider',
+    'envServiceProvider',
     function ($routeProvider, envServiceProvider) {
       $routeProvider.otherwise({redirectTo: '/login'});
-      //
-      // envServiceProvider.config({
-      //   domains: {
-      //     development: ["localhost"],
-      //     production: ["24.70.42.226"]
-      //   },
-      //   vars: {
-      //     development: {
-      //       apiUrl: "//localhost:5000/api"
-      //     },
-      //     production: {
-      //       apiUrl: "//kidsapp-api.herokuapp.com/api"
-      //     }
-      //   }
-      // });
+
+      envServiceProvider.config({
+        domains: {
+          development: ["localhost"],
+          production: ["24.70.42.226"]
+        },
+        vars: {
+          development: {
+            apiUrl: "//localhost:5000/api"
+          },
+          production: {
+            apiUrl: "//kidsapp-api.herokuapp.com/api"
+          }
+        }
+      });
 
     }])
   .run(function ($rootScope, $location, authService) {
