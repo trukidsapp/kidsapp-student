@@ -12,14 +12,13 @@ angular.module('app.game-list', ['ngRoute'])
     '$http',
     '$location',
     'authService',
-    function ($scope, $http, $location, authService) {
+    'envService',
+    function ($scope, $http, $location, authService, envService) {
 
       console.log('test');
 
 
-      var user = authService.getTokenUser();
-      console.log(user.classId);
-      console.log(user.username);
+      var loggedInUser = authService.getTokenUser();
 
       // TODO get class id for student
 
@@ -27,9 +26,11 @@ angular.module('app.game-list', ['ngRoute'])
       /**
        * Retrieve all published quizzes
        */
-      // $http
-      //   .get(endpointConfig.apiEndpoint + '/quizzes') // TODO change request endpoint
-      //   .then(quizzesRetrieveSuccess, quizzesRetrieveFail);
+      $http
+        .get(envService.read('apiUrl') + '/classes/' + loggedInUser.classId + '/quizzes', {
+          headers: authService.getAPITokenHeader()
+        }) // TODO change request endpoint
+        .then(quizzesRetrieveSuccess, quizzesRetrieveFail);
 
       function quizzesRetrieveSuccess(response) {
         $scope.quizzes = response.data;

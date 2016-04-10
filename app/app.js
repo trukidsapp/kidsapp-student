@@ -3,7 +3,8 @@ angular.module('app', [
     'environment',
     'app.authService',
     'app.login',
-    'app.game-list'
+    'app.game-list',
+    'app.quiz'
 
   ])
   .config([
