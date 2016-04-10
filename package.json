@@ -1,0 +1,18 @@
+{
+  "name": "trukidsapp-student",
+  "version": "1.0.0",
+  "description": "Student web application/game",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trukidsapp/student.git"
+  },
+  "author": "Steven Lyall and Greg Petersen",
+  "license": "MIT",
+  "scripts": {
+    "start": "http-server -a localhost -p 8000 -c-1"
+  },
+  "dependencies": {
+      "http-server": "^0.6.1"
+  }
+}
