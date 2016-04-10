@@ -29,7 +29,8 @@ angular.module('app.authService', ['angular-jwt'])
         console.log(payload);
         return {
           username: payload.username,
-          userType: payload.userType
+          userType: payload.userType,
+          classId: payload.classId
         }
       },
 
