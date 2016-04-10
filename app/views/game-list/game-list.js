@@ -15,8 +15,12 @@ angular.module('app.game-list', ['ngRoute'])
     function ($scope, $http, $location, authService) {
 
       console.log('test');
-      
-      
+
+
+      var user = authService.getTokenUser();
+      console.log(user.classId);
+      console.log(user.username);
+
       // TODO get class id for student
 
       // TODO get quizzes for the class here
