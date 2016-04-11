@@ -46,11 +46,10 @@
 
 	</div>
 
-	<!--TODO fix next button-->
 	<!-- Navigation -->
-	<button class="btn btn-lg btn-info" ng-hide="questionForm.$pristine || isEndOfQuizReached()"
+	<button class="btn btn-lg btn-info"
+	        ng-hide="questionForm.$invalid || questionForm.$pristine || isEndOfQuizReached()"
 	        id="nextButton" ng-click="nextBtnClick()" type="submit">
-		<!-- todo ng-hide="questionForm.$invalid || type="submit"-->
 		Next
 	</button>
 

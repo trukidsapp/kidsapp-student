@@ -37,19 +37,19 @@ label > input + h2 {
 }
 
 label > input:checked + h2 {
-	border: 10px solid green;
+	border: 10px solid #4582ec;
 	border-radius: 50%;
 	padding: 20px;
 }
 
-label > input + h2 {
-	border: 10px solid transparent;
-	/*border-radius: 50%;*/
-	padding: 20px;
-}
+/*label > input + h2 {*/
+/*border: 10px solid transparent;*/
+/*!*border-radius: 50%;*!*/
+/*padding: 20px;*/
+/*}*/
 
-label > input:checked + h2 {
-	border: 10px solid green;
-	border-radius: 50%;
-	padding: 20px;
-}
+/*label > input:checked + h2 {*/
+/*border: 10px #4582ec;*/
+/*border-radius: 50%;*/
+/*padding: 20px;*/
+/*}*/

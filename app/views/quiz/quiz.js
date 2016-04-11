@@ -19,7 +19,6 @@ angular.module('app.quiz', ['ngRoute'])
 
       $scope.currentQuestionNum = -1;
 
-      var loggedInUser = authService.getTokenUser();
       var quizId = $routeParams.quizId;
 
       (function getQuiz() {
@@ -38,21 +37,6 @@ angular.module('app.quiz', ['ngRoute'])
 
       })();
 
-      function getQuestionAnswers() {
-        $scope.quiz.questions.forEach(function (question, i, questions) {
-          $http
-            .get(envService.read('apiUrl') + '/questions/' + question.id + '/answers', {
-              headers: authService.getAPITokenHeader()
-            })
-            .then(function (response) {
-              question.answers = response.data;
-              startQuiz();
-            }, onRequestFailure);
-
-          question.questionResult = {};
-        })
-      }
-
       function getQuestions() {
         $http
           .get(envService.read('apiUrl') + '/quizzes/' + quizId + '/questions', {
@@ -65,8 +49,24 @@ angular.module('app.quiz', ['ngRoute'])
           console.log($scope.quiz);
           getQuestionAnswers();
         }
+      }
 
-
+      function getQuestionAnswers() {
+        var retrieved = 0;
+        $scope.quiz.questions.forEach(function (question, i, questions) {
+          $http
+            .get(envService.read('apiUrl') + '/questions/' + question.id + '/answers', {
+              headers: authService.getAPITokenHeader()
+            })
+            .then(function (response) {
+              question.answers = response.data;
+              retrieved++;
+              if (retrieved == questions.length) {
+                startQuiz();
+              }
+            }, onRequestFailure);
+          question.questionResult = {};
+        });
       }
 
       function onRequestFailure(response) {
@@ -78,47 +78,61 @@ angular.module('app.quiz', ['ngRoute'])
 
       function startQuiz() {
         $scope.currentQuestionNum++;
+        //start time for first question
         $scope.quiz.questions[$scope.currentQuestionNum].questionResult.startTime = new Date();
       }
 
       /**
        * Handler for Next button clicks.
+       * Records end and start times, checks whether answers are correct.
        */
       $scope.nextBtnClick = function () {
         console.log("response recorded:");
 
         var questionResult = $scope.quiz.questions[$scope.currentQuestionNum].questionResult;
         questionResult.endTime = new Date();
-        var correctAnswers = $scope.quiz.questions[$scope.currentQuestionNum].answers.filter(function (answer) {
-          return answer.isCorrect
-        });
 
-        var correctFound = correctAnswers.filter(function (answer) {
-          return answer.answerText == questionResult.response;
-        });
+        questionResult.isCorrect = isAnswerCorrect();
 
-        questionResult.isCorrect = correctFound.length > 0;
-
-        console.log($scope.quiz.questions[$scope.currentQuestionNum].questionResult);
+        console.log(questionResult);
 
         // advance to next question
         $scope.currentQuestionNum++;
 
         if ($scope.isEndOfQuizReached()) {
-          console.log("End of survey");
-          // if completed
-          $("#questionTextPanel").hide();
-          $("#quizCompleteModal").modal("show");
+          onSurveyFinish()
         }
         else {
           $scope.quiz.questions[$scope.currentQuestionNum].questionResult.startTime = new Date();
-
         }
 
       };
 
+      function onSurveyFinish() {
+        console.log("End of survey");
+        // if completed
+        $("#questionTextPanel").hide();
+        $("#quizCompleteModal").modal("show");
+      }
+
       /**
-       * Checks if it is the end of the survey
+       * Checks whether answer is in the set of correct answers for the question
+       * @returns true if the answer is a correct one, false otherwise
+       */
+      function isAnswerCorrect() {
+        var correctAnswers = $scope.quiz.questions[$scope.currentQuestionNum].answers.filter(function (answer) {
+          return answer.isCorrect
+        });
+
+        var correctFound = correctAnswers.filter(function (answer) {
+          return answer.answerText == $scope.quiz.questions[$scope.currentQuestionNum].questionResult.response;
+        });
+
+        return correctFound.length > 0;
+      }
+
+      /**
+       * Checks if it is the end of the quiz
        * @returns true if there are no more questions, false otherwise
        */
       $scope.isEndOfQuizReached = function () {
@@ -126,26 +140,39 @@ angular.module('app.quiz', ['ngRoute'])
       };
 
       /**
-       * Handler for submit button. Collects answers a sends them to the server.
+       * Handler for submit button.
+       * Collects student's results for each question and sends them to the server.
        */
       $scope.submitResultsBtnClick = function () {
+        var student = authService.getTokenUser().username;
+        var questionResultsSent = 0;
 
-        console.log($scope.response);
-        // $http.post(endpointConfig.apiEndpoint + '/responses', $scope.response)
-        //   .then(success, fail);
-        // TODO send answers
-        success();
+        $scope.quiz.questions.forEach(function (question) {
+          $http
+            .post(envService.read('apiUrl') + '/questions/' + question.id + "/students/"
+              + student + "/results",
+              question.questionResult,
+              {
+                headers: authService.getAPITokenHeader()
+              })
+            .then(function (response) {
+              questionResultsSent++;
+              if (questionResultsSent == $scope.quiz.questions.length) {
+                onResultsSentSuccess();
+                console.log(response)
+              }
+            }, onResultsSentFailure);
+        });
 
-
-        function success(response) {
+        function onResultsSentSuccess(response) {
           console.log(response);
-          console.log('sent successfully');
+          console.log(' all results sent successfully');
           $("#quizCompleteModal").modal("hide");
           $("#sentSuccessMessage").show();
         }
 
-        function fail(response) {
-          console.log(response.data);
+        function onResultsSentFailure(response) {
+          console.error(response.data);
           console.log('sending failed');
           alert("Sorry, an error occured. Please inform the evaluation facilitator.");
         }
@@ -157,20 +184,7 @@ angular.module('app.quiz', ['ngRoute'])
        */
       $scope.backQuizListBtnClick = function () {
         $location.path("/game-list")
-
       };
-
-      function setUpQuestionResponses() {
-// TODO
-        $scope.response = {
-          evaluationId: $scope.evaluation.id,
-          questionResponses: [$scope.evaluation.questions.length]
-        };
-
-        $scope.response.questionResponses.forEach(function (element, i, responses) {
-          responses[i] = undefined;
-        });
-      }
 
 
     }]);
