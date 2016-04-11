@@ -20,16 +20,13 @@ angular.module('app.game-list', ['ngRoute'])
 
       var loggedInUser = authService.getTokenUser();
 
-      // TODO get class id for student
-
-      // TODO get quizzes for the class here
       /**
        * Retrieve all published quizzes
        */
       $http
         .get(envService.read('apiUrl') + '/classes/' + loggedInUser.classId + '/quizzes', {
           headers: authService.getAPITokenHeader()
-        }) // TODO change request endpoint
+        })
         .then(quizzesRetrieveSuccess, quizzesRetrieveFail);
 
       function quizzesRetrieveSuccess(response) {
