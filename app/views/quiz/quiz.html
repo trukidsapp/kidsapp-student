@@ -1,27 +1,3 @@
-<!--name entry modal-->
-<div class="modal fade" id="enterNameModal" tabindex="-1" role="dialog" aria-labelledby="nameModalLabel"
-     data-backdrop="static" data-keyboard="false">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="nameModalLabel">Welcome</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<form name="nameForm" novalidate class="form-group col-lg-10">
-						<label for="name">Please enter your name:</label>
-						<input ng-model="response.name" ng-required="true" type="text" class="form-control"
-						       id="name" placeholder="Name">
-						<button type="button" ng-disabled="nameForm.$invalid" class="btn btn-info pull-right"
-						        ng-click="enterNameSubmitBtnClick()">Done
-						</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
 <!--eval complete change modal-->
 <div class="modal fade" id="evalCompleteModal" tabindex="-1" role="dialog" aria-labelledby="completedModalLabel"
      data-backdrop="static" data-keyboard="false">
@@ -45,82 +21,51 @@
 
 		<!--Thank you message-->
 		<div id="responseSentMessage" class="jumbotron alert-success" style="display: none">
-			<h3 class="center-block">Thank you for completing the evaluation.</h3>
-			<p>You may close this application.</p>
+			<h3 class="center-block">Quiz completed!</h3>
+			<p>You may close the quiz.</p>
 		</div>
 
 		<!--Question-->
 		<div id="questionTextPanel" class="well">
-			<button ng-show="evaluation.questions[currentQuestionNum].audioPath" type="submit"
-			        class="btn btn-default pull-right" ng-click="playQuestionAudio()">
-				<span class="glyphicon glyphicon-volume-up"></span></button>
-			<h3>{{evaluation.questions[currentQuestionNum].text}}</h3>
+			<h3>{{quiz.questions[currentQuestionNum].text}}</h3>
 
 		</div>
 
-		<div id="questionScalePanel">
-			<!--Faces Scale-->
-			<div ng-show="evaluation.questions[currentQuestionNum].type === 'Faces'">
+		<div id="answerPanel">
+			<!--Answers-->
+			<div class="center-block">
 				<label>
 					<input type="radio" name="faces" value="1" ng-model="response.questionResponses[currentQuestionNum]"
 					       ng-required="true"/>
-					<img src="./img/faces/face1.gif"/>
-					<p>Strongly Disagree</p>
+					<h2>A</h2>
 				</label>
 
 				<label>
 					<input type="radio" name="faces" value="2"
 					       ng-model="response.questionResponses[currentQuestionNum]"/>
-					<img src="./img/faces/face2.gif"/>
-					<p>Disagree</p>
+					<h2>B</h2>
 				</label>
 				<label>
 					<input type="radio" name="faces" value="3"
 					       ng-model="response.questionResponses[currentQuestionNum]"/>
-					<img src="./img/faces/face3.gif"/>
-					<p>Agree</p>
+					<h2>C</h2>
 				</label>
 				<label>
 					<input type="radio" name="faces" value="4"
 					       ng-model="response.questionResponses[currentQuestionNum]"/>
-					<img src="./img/faces/face4.gif"/>
-					<p>Strongly Agree</p>
+					<h2>D</h2>
 				</label>
 
 				<br>
-
-				<!--Not applicable Option-->
-				<label ng-show="evaluation.questions[currentQuestionNum].type === 'Faces' && evaluation.allowNotApplicable == true"
-				>
-					<input type="radio" name="faces" value="NA"
-					       ng-model="response.questionResponses[currentQuestionNum]"/>
-					<h1>N/A</h1>
-					<p>Not Applicable</p>
-				</label>
-				<!--Not applicable Option-->
-				<label ng-show="evaluation.questions[currentQuestionNum].type === 'Faces' && evaluation.allowDontKnow == true"
-				>
-					<input type="radio" name="faces" value="DK"
-					       ng-model="response.questionResponses[currentQuestionNum]"/>
-					<h1>?</h1>
-					<p>Don't Know</p>
-				</label>
 			</div>
-
-			<!--Descriptive response -->
-			<div class="form-group" ng-show="evaluation.questions[currentQuestionNum].type === 'Descriptive'"><textarea
-					ng-model="response.questionResponses[currentQuestionNum]" class="form-control" rows="4"
-					ng-required="true"></textarea></div>
-
-
 		</div>
 
 	</div>
 
 	<!-- Navigation -->
 	<button class="btn btn-lg btn-info"
-	        ng-hide="questionForm.$invalid || questionForm.$pristine || isEndOfSurveyReached()" type="submit"
 	        id="nextButton" ng-click="nextBtnClick()">
+		<!-- todo ng-hide="questionForm.$invalid || questionForm.$pristine || isEndOfQuizReached()" type="submit"-->
 		Next
 	</button>
 

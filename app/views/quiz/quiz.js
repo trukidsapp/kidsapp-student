@@ -18,102 +18,83 @@ angular.module('app.quiz', ['ngRoute'])
 
       $scope.currentQuestionNum = -1;
 
-      // TODO get from local storage
-      /**
-       * Retrieves the questions in the quiz
-       */
-      (function getEvalQuestions() {
-        var quizId = $routeParams.quizId;
+      var loggedInUser = authService.getTokenUser();
+      var quizId = $routeParams.quizId;
 
-        $scope.quiz = window.localStorage['kidsapp_quiz_' + quizId];
-        console.log($scope.quiz);
+      (function getQuiz() {
+
 
         $http
-          .get(endpointConfig.apiEndpoint + '/evaluations/' + evalId)
+          .get(envService.read('apiUrl') + '/quizzes/' + quizId, {
+            headers: authService.getAPITokenHeader()
+          })
           .then(success, fail);
 
         function success(response) {
-          $scope.evaluation = response.data[0];
-          console.log(response);
-          console.log('retrieved successfully');
-          console.log($scope.evaluation);
-
-          // prevent responses to unavailable evaluations
-          if ($scope.evaluation.status != "Published") {
-            $location.path("/select");
-            return;
-          }
-
-          checkEvaluationNotEmpty();
-
-          $scope.response = {
-            evaluationId: $scope.evaluation.id,
-            questionResponses: [$scope.evaluation.questions.length]
-          };
-
-          $scope.response.questionResponses.forEach(function (element, i, responses) {
-            responses[i] = undefined;
-          });
-
-          if (!$scope.evaluation.isAnonymous) {
-            console.log('need name');
-            $("#enterNameModal").modal("show");
-
-          }
-          else {
-            $scope.currentQuestionNum++;
-          }
-
-        }
-
-        function checkEvaluationNotEmpty() {
-          if ($scope.evaluation.questions.length < 1) {
-            alert("There is a problem with this evaluation. Please inform the evaluation facilitator.")
-          }
+          $scope.quiz = response.data;
+          console.log($scope.quiz);
+          getQuestions();
         }
 
         function fail(response) {
           console.log(response.data);
           console.log('retrieved fail');
-          $location.path('/select');
+          $location.path('/game-list');
         }
       })();
+
+      function getQuestions() {
+        $http
+          .get(envService.read('apiUrl') + '/quizzes/' + quizId + '/questions', {
+            headers: authService.getAPITokenHeader()
+          })
+          .then(success, fail);
+
+        function success(response) {
+          $scope.quiz.questions = response.data;
+          console.log($scope.quiz);
+        }
+
+        function fail(response) {
+          console.log(response.data);
+          console.log('retrieved fail');
+          $location.path('/game-list');
+        }
+      }
+
+
+      startQuiz();
+      function startQuiz() {
+        $scope.currentQuestionNum++;
+      }
 
       /**
        * Handler for Next button clicks.
        */
       $scope.nextBtnClick = function () {
         console.log("response recorded:");
-        console.log($scope.response.questionResponses[$scope.currentQuestionNum]);
+        //console.log($scope.response.questionResponses[$scope.currentQuestionNum]);
+        // TODO store response
 
         // advance to next question
         $scope.currentQuestionNum++;
 
-        // check if end of survey reached
-        if ($scope.isEndOfSurveyReached()) {
+        if ($scope.isEndOfQuizReached()) {
           console.log("End of survey");
-
           // if completed
           $("#questionTextPanel").hide();
           $("#evalCompleteModal").modal("show");
         }
-      };
 
-      /**
-       * Plays a question's audio file
-       */
-      $scope.playQuestionAudio = function () {
-        var url = $scope.evaluation.questions[$scope.currentQuestionNum].audioPath;
-        console.log('playing ' + url);
-        new Audio(url).play();
       };
 
       /**
        * Checks if it is the end of the survey
        * @returns true if there are no more questions, false otherwise
        */
-      $scope.isEndOfSurveyReached = function () {
-        return $scope.currentQuestionNum + 1 > $scope.evaluation.questions.length;
+      $scope.isEndOfQuizReached = function () {
+        console.log($scope.currentQuestionNum);
+        return $scope.currentQuestionNum + 1 > $scope.quiz.questions.length;
       };
 
       /**
@@ -140,12 +121,17 @@ angular.module('app.quiz', ['ngRoute'])
 
       };
 
-      /**
-       * Handler for name submission button
-       */
-      $scope.enterNameSubmitBtnClick = function () {
-        $("#enterNameModal").modal("hide");
-        $scope.currentQuestionNum++;
+      function setUpQuestionResponses() {
+// TODO
+        $scope.response = {
+          evaluationId: $scope.evaluation.id,
+          questionResponses: [$scope.evaluation.questions.length]
+        };
+
+        $scope.response.questionResponses.forEach(function (element, i, responses) {
+          responses[i] = undefined;
+        });
       }
+
 
     }]);

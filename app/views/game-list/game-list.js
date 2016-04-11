@@ -51,7 +51,7 @@ angular.module('app.game-list', ['ngRoute'])
        * @param id id of quiz to begin
        */
       $scope.startQuiz = function (id) {
-        $location.path("/questions/" + id); // TODO change request endpoint get quiz
+        $location.path("/quiz/" + id);
       };
 
     }]);
