@@ -17,6 +17,10 @@
 	</div>
 </div>
 
+<div id="quizProgressBar" class="progress">
+	<div class="progress-bar" style="width: {{(currentQuestionNum/quiz.questions.length)*100}}%;"></div>
+</div>
+
 <form name="questionForm" novalidate ng-hide="currentQuestionNum < 0">
 	<div class="questionContainer center-block">
 
@@ -46,11 +50,13 @@
 
 	</div>
 
+
 	<!-- Navigation -->
 	<button class="btn btn-lg btn-info"
 	        ng-hide="questionForm.$invalid || questionForm.$pristine || isEndOfQuizReached()"
 	        id="nextButton" ng-click="nextBtnClick()" type="submit">
 		Next
 	</button>
+
 
 </form>
