@@ -15,10 +15,19 @@ angular.module('app.game-list', ['ngRoute'])
     'envService',
     function ($scope, $http, $location, authService, envService) {
 
-      console.log('test');
-
-
       var loggedInUser = authService.getTokenUser();
+
+      /**
+       * Get student so name can be shown
+       */
+      $http.get(envService.read('apiUrl') + '/classes/' + loggedInUser.classId + '/students/' + loggedInUser.username, {
+          headers: authService.getAPITokenHeader()
+        })
+        .then(function (response) {
+          $scope.student = response.data;
+        }, function (response) {
+          console.error(response)
+        });
 
       /**
        * Retrieve all published quizzes
