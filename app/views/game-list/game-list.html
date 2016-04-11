@@ -1,26 +1,22 @@
-<div class="container">
+<div class="col-md-6">
+    <h2>Quizzes in Game</h2>
 
-	<div class="col-md-6">
-		<p ng-click="logoutBtnClick()">Log out</p>
+    <div class="panel panel-warning" ng-show="!quizzes.length">
+        <div class="panel-heading">Select a quiz</div>
+        <div class="panel-body">
+            <p>This game has no quizzes</p>
+        </div>
+    </div>
 
-		<h2>Quizzes in Game</h2>
-		<p class="help-block">Select a quiz:</p>
-
-		<div class="panel panel-info" ng-show="!quizzes.length">
-			<div class="panel-body">
-				<p>This game has no quizzes</p>
-			</div>
-		</div>
-
-		<div class="panel panel-primary" ng-repeat="quiz in quizzes">
-			<div class="panel-body">
-				<h4>{{quiz.quizName}}</h4>
-				<button type="button" class="btn btn-default btn-lg pull-right" ng-click="startQuiz(quiz.id)">
-					<span class="glyphicon glyphicon-flag" aria-hidden="true"></span> Start
-				</button>
-			</div>
-		</div>
-		</table>
-	</div>
+    <div class="panel panel-primary" ng-repeat="quiz in quizzes">
+        <div class="panel-heading">Select a quiz</div>
+        <div class="panel-body">
+            <h4>{{quiz.quizName}}</h4>
+            <button type="button" class="btn btn-default btn-lg pull-right" ng-click="startQuiz(quiz.id)">
+                <span class="glyphicon glyphicon-flag" aria-hidden="true"></span> Start
+            </button>
+        </div>
+    </div>
+    </table>
 </div>
 

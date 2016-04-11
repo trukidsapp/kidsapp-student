@@ -54,9 +54,4 @@ angular.module('app.game-list', ['ngRoute'])
         $location.path("/questions/" + id); // TODO change request endpoint get quiz
       };
 
-      $scope.logoutBtnClick = function () {
-        authService.logout();
-        $location.path("/login");
-      };
-
     }]);

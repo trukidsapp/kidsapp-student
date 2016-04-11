@@ -4,7 +4,8 @@ angular.module('app', [
     'app.authService',
     'app.login',
     'app.game-list',
-    'app.quiz'
+    'app.quiz',
+    'app.nav'
 
   ])
   .config([

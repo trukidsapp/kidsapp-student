@@ -11,11 +11,15 @@
 
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="styles/bootstrap.min.css">
 	<link rel="stylesheet" href="styles/app.css">
 
 </head>
 <body>
+
+
 <div class="container">
+	<div ng-controller="navController" ng-include="templateUrl"></div>
 	<div ng-view></div>
 </div>
 
@@ -35,15 +39,9 @@
 <script src="views/login/login.js"></script>
 <script src="views/game-list/game-list.js"></script>
 <script src="views/quiz/quiz.js"></script>
+<script src="views/nav/nav.js"></script>
 
 
 
 </body>
-
-<footer class="footer">
-	<div class="container">
-		<p class="text-muted">Copyright 2016 Steven Lyall and Greg Petersen.</p>
-	</div>
-</footer>
-
 </html>
