@@ -1,5 +1,5 @@
-<!--eval complete change modal-->
-<div class="modal fade" id="evalCompleteModal" tabindex="-1" role="dialog" aria-labelledby="completedModalLabel"
+<!--quiz complete change modal-->
+<div class="modal fade" id="quizCompleteModal" tabindex="-1" role="dialog" aria-labelledby="completedModalLabel"
      data-backdrop="static" data-keyboard="false">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -7,9 +7,9 @@
 				<h4 class="modal-title" id="completedModalLabel">Almost Done!</h4>
 			</div>
 			<div class="modal-body">
-				<button type="button" class="btn btn-info pull-right" ng-click="finishEvaluationBtnClick()">Finish
+				<button type="button" class="btn btn-info pull-right" ng-click="submitResultsBtnClick()">Finish
 				</button>
-				<p>Click "Finish" to complete your evaluation.</p>
+				<p>Click the "Submit Results" button to submit your answers.</p>
 				<p ng-model="resultSendError"></p>
 			</div>
 		</div>
@@ -19,53 +19,36 @@
 <form name="questionForm" novalidate ng-hide="currentQuestionNum < 0">
 	<div class="questionContainer center-block">
 
-		<!--Thank you message-->
-		<div id="responseSentMessage" class="jumbotron alert-success" style="display: none">
+		<!--successful submission confirm message-->
+		<div id="sentSuccessMessage" class="jumbotron alert-success" style="display: none">
 			<h3 class="center-block">Quiz completed!</h3>
-			<p>You may close the quiz.</p>
+			<div class="btn btn-warning" ng-click="backQuizListBtnClick()">Back to Quiz List</div>
 		</div>
 
 		<!--Question-->
 		<div id="questionTextPanel" class="well">
 			<h3>{{quiz.questions[currentQuestionNum].text}}</h3>
-
 		</div>
 
+		<!--Answers-->
 		<div id="answerPanel">
-			<!--Answers-->
-			<div class="center-block">
-				<label>
-					<input type="radio" name="faces" value="1" ng-model="response.questionResponses[currentQuestionNum]"
+			<div>
+				<label ng-repeat="answer in quiz.questions[currentQuestionNum].answers">
+					<input type="radio" name="answers" value="answer.answerText"
+					       ng-model="response.questionResponses[currentQuestionNum]"
 					       ng-required="true"/>
-					<h2>A</h2>
+					<h2>{{answer.answerText}}</h2>
 				</label>
 
-				<label>
-					<input type="radio" name="faces" value="2"
-					       ng-model="response.questionResponses[currentQuestionNum]"/>
-					<h2>B</h2>
-				</label>
-				<label>
-					<input type="radio" name="faces" value="3"
-					       ng-model="response.questionResponses[currentQuestionNum]"/>
-					<h2>C</h2>
-				</label>
-				<label>
-					<input type="radio" name="faces" value="4"
-					       ng-model="response.questionResponses[currentQuestionNum]"/>
-					<h2>D</h2>
-				</label>
-
-				<br>
 			</div>
 		</div>
 
 	</div>
 
 	<!-- Navigation -->
-	<button class="btn btn-lg btn-info"
-	        id="nextButton" ng-click="nextBtnClick()">
-		<!-- todo ng-hide="questionForm.$invalid || questionForm.$pristine || isEndOfQuizReached()" type="submit"-->
+	<button class="btn btn-lg btn-info" ng-hide="questionForm.$pristine || isEndOfQuizReached()"
+	        id="nextButton" ng-click="nextBtnClick()" type="submit">
+		<!-- todo ng-hide="questionForm.$invalid || questionForm.$pristine" type="submit"-->
 		Next
 	</button>
 

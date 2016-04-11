@@ -23,12 +23,11 @@ angular.module('app.quiz', ['ngRoute'])
 
       (function getQuiz() {
 
-
         $http
           .get(envService.read('apiUrl') + '/quizzes/' + quizId, {
             headers: authService.getAPITokenHeader()
           })
-          .then(success, fail);
+          .then(success, onRequestFailure);
 
         function success(response) {
           $scope.quiz = response.data;
@@ -36,32 +35,41 @@ angular.module('app.quiz', ['ngRoute'])
           getQuestions();
         }
 
-        function fail(response) {
-          console.log(response.data);
-          console.log('retrieved fail');
-          $location.path('/game-list');
-        }
       })();
+
+      function getQuestionAnswers() {
+        $scope.quiz.questions.forEach(function (question, i, questions) {
+          $http
+            .get(envService.read('apiUrl') + '/questions/' + question.id + '/answers', {
+              headers: authService.getAPITokenHeader()
+            })
+            .then(function (response) {
+              question.answers = response.data;
+            }, onRequestFailure);
+        })
+      }
 
       function getQuestions() {
         $http
           .get(envService.read('apiUrl') + '/quizzes/' + quizId + '/questions', {
             headers: authService.getAPITokenHeader()
           })
-          .then(success, fail);
+          .then(success, onRequestFailure);
 
         function success(response) {
           $scope.quiz.questions = response.data;
           console.log($scope.quiz);
+          getQuestionAnswers();
         }
 
-        function fail(response) {
-          console.log(response.data);
-          console.log('retrieved fail');
-          $location.path('/game-list');
-        }
+
       }
 
+      function onRequestFailure(response) {
+        console.log(response.data);
+        console.log('retrieved fail');
+        $location.path('/game-list');
+      }
 
       startQuiz();
       function startQuiz() {
@@ -83,7 +91,7 @@ angular.module('app.quiz', ['ngRoute'])
           console.log("End of survey");
           // if completed
           $("#questionTextPanel").hide();
-          $("#evalCompleteModal").modal("show");
+          $("#quizCompleteModal").modal("show");
         }
 
       };
@@ -93,24 +101,26 @@ angular.module('app.quiz', ['ngRoute'])
        * @returns true if there are no more questions, false otherwise
        */
       $scope.isEndOfQuizReached = function () {
-        console.log($scope.currentQuestionNum);
         return $scope.currentQuestionNum + 1 > $scope.quiz.questions.length;
       };
 
       /**
-       * Handler for finish button. Finalizes responses and sends them to the server.
+       * Handler for submit button. Collects answers a sends them to the server.
        */
-      $scope.finishEvaluationBtnClick = function () {
+      $scope.submitResultsBtnClick = function () {
 
         console.log($scope.response);
-        $http.post(endpointConfig.apiEndpoint + '/responses', $scope.response)
-          .then(success, fail);
+        // $http.post(endpointConfig.apiEndpoint + '/responses', $scope.response)
+        //   .then(success, fail);
+        // TODO send answers
+        success();
+
 
         function success(response) {
           console.log(response);
           console.log('sent successfully');
-          $("#evalCompleteModal").modal("hide");
-          $("#responseSentMessage").show();
+          $("#quizCompleteModal").modal("hide");
+          $("#sentSuccessMessage").show();
         }
 
         function fail(response) {
@@ -118,6 +128,14 @@ angular.module('app.quiz', ['ngRoute'])
           console.log('sending failed');
           alert("Sorry, an error occured. Please inform the evaluation facilitator.");
         }
+
+      };
+
+      /**
+       * Handler for back button clicks in the quiz completed alert. Returns to the quiz list
+       */
+      $scope.backQuizListBtnClick = function () {
+        $location.path("/game-list")
 
       };
 
