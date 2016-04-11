@@ -16,6 +16,7 @@ angular.module('app.quiz', ['ngRoute'])
     'envService',
     function ($routeParams, $scope, $http, $location, authService, envService) {
 
+
       $scope.currentQuestionNum = -1;
 
       var loggedInUser = authService.getTokenUser();
@@ -45,7 +46,10 @@ angular.module('app.quiz', ['ngRoute'])
             })
             .then(function (response) {
               question.answers = response.data;
+              startQuiz();
             }, onRequestFailure);
+
+          question.questionResult = {};
         })
       }
 
@@ -71,9 +75,10 @@ angular.module('app.quiz', ['ngRoute'])
         $location.path('/game-list');
       }
 
-      startQuiz();
+
       function startQuiz() {
         $scope.currentQuestionNum++;
+        $scope.quiz.questions[$scope.currentQuestionNum].questionResult.startTime = new Date();
       }
 
       /**
@@ -81,8 +86,20 @@ angular.module('app.quiz', ['ngRoute'])
        */
       $scope.nextBtnClick = function () {
         console.log("response recorded:");
-        //console.log($scope.response.questionResponses[$scope.currentQuestionNum]);
-        // TODO store response
+
+        var questionResult = $scope.quiz.questions[$scope.currentQuestionNum].questionResult;
+        questionResult.endTime = new Date();
+        var correctAnswers = $scope.quiz.questions[$scope.currentQuestionNum].answers.filter(function (answer) {
+          return answer.isCorrect
+        });
+
+        var correctFound = correctAnswers.filter(function (answer) {
+          return answer.answerText == questionResult.response;
+        });
+
+        questionResult.isCorrect = correctFound.length > 0;
+
+        console.log($scope.quiz.questions[$scope.currentQuestionNum].questionResult);
 
         // advance to next question
         $scope.currentQuestionNum++;
@@ -92,6 +109,10 @@ angular.module('app.quiz', ['ngRoute'])
           // if completed
           $("#questionTextPanel").hide();
           $("#quizCompleteModal").modal("show");
+        }
+        else {
+          $scope.quiz.questions[$scope.currentQuestionNum].questionResult.startTime = new Date();
+
         }
 
       };

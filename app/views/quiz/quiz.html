@@ -7,7 +7,8 @@
 				<h4 class="modal-title" id="completedModalLabel">Almost Done!</h4>
 			</div>
 			<div class="modal-body">
-				<button type="button" class="btn btn-info pull-right" ng-click="submitResultsBtnClick()">Finish
+				<button type="button" class="btn btn-success pull-right" ng-click="submitResultsBtnClick()">
+					Submit Results
 				</button>
 				<p>Click the "Submit Results" button to submit your answers.</p>
 				<p ng-model="resultSendError"></p>
@@ -34,8 +35,8 @@
 		<div id="answerPanel">
 			<div>
 				<label ng-repeat="answer in quiz.questions[currentQuestionNum].answers">
-					<input type="radio" name="answers" value="answer.answerText"
-					       ng-model="response.questionResponses[currentQuestionNum]"
+					<input type="radio" name="answers" value="{{answer.answerText}}"
+					       ng-model="quiz.questions[currentQuestionNum].questionResult.response"
 					       ng-required="true"/>
 					<h2>{{answer.answerText}}</h2>
 				</label>
@@ -45,10 +46,11 @@
 
 	</div>
 
+	<!--TODO fix next button-->
 	<!-- Navigation -->
 	<button class="btn btn-lg btn-info" ng-hide="questionForm.$pristine || isEndOfQuizReached()"
 	        id="nextButton" ng-click="nextBtnClick()" type="submit">
-		<!-- todo ng-hide="questionForm.$invalid || questionForm.$pristine" type="submit"-->
+		<!-- todo ng-hide="questionForm.$invalid || type="submit"-->
 		Next
 	</button>
 
