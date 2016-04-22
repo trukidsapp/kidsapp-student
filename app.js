@@ -29,6 +29,7 @@ angular.module('app', [
         }
       });
 
+      envServiceProvider.check();
     }])
   .run(function ($rootScope, $location, authService) {
     $rootScope.$on("$routeChangeStart", function (event, next, current) {
