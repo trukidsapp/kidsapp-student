@@ -24,7 +24,7 @@ angular.module('app', [
             apiUrl: "//localhost:5000/api"
           },
           production: {
-            apiUrl: "//kidsapp.dufferin.sd73.bc.ca/:3000/api"
+            apiUrl: "//kidsapp.dufferin.sd73.bc.ca:3000/api"
           }
         }
       });
